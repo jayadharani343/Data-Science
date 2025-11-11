@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakBee - AI Speech Therapy for Recovery</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="chatbot.js" defer></script>
+</head>
+<body>
+    <!-- Language Selector -->
+    <div id="language-selector" class="language-selector">
+        <select id="languageSelect">
+            <option value="en-US">🇺🇸 English</option>
+            <option value="ta-IN">🇮🇳 தமிழ்</option>
+        </select>
+    </div>
+
+    <!-- Authentication Container -->
+    <div id="auth-container" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="logo">
+                    <i class="fas fa-heart-pulse"></i>
+                    <h1 data-translate="app_title">SpeechCare</h1>
+                </div>
+                <p data-translate="app_subtitle">Empowering speech recovery through AI technology</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form">
+                <h2 data-translate="welcome_back">Welcome Back</h2>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="loginUsername" data-translate-placeholder="username" placeholder="Username" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" data-translate-placeholder="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="auth-btn" data-translate="login">Login</button>
+                </form>
+                <p class="auth-switch">
+                    <span data-translate="new_user">New user?</span> 
+                    <a href="#" id="showSignup" data-translate="sign_up_here">Sign up here</a>
+                </p>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup-form" class="auth-form hidden">
+                <h2 data-translate="create_account">Create Account</h2>
+                <form id="signupForm">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="signupUsername" data-translate-placeholder="choose_username" placeholder="Choose Username" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="signupPassword" data-translate-placeholder="create_password" placeholder="Create Password" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirmPassword" data-translate-placeholder="confirm_password" placeholder="Confirm Password" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-user-md"></i>
+                        <input type="text" id="fullName" data-translate-placeholder="full_name" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-calendar"></i>
+                        <input type="number" id="age" data-translate-placeholder="age" placeholder="Age" min="1" max="120" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-stethoscope"></i>
+                        <select id="condition" required>
+                            <option value="" data-translate="select_condition">Select Condition</option>
+                            <option value="stroke" data-translate="stroke">Stroke Recovery</option>
+                            <option value="aphasia" data-translate="aphasia">Aphasia</option>
+                            <option value="dysarthria" data-translate="dysarthria">Dysarthria</option>
+                            <option value="other" data-translate="other">Other</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="auth-btn" data-translate="sign_up">Sign Up</button>
+                </form>
+                <p class="auth-switch">
+                    <span data-translate="have_account">Already have an account?</span> 
+                    <a href="#" id="showLogin" data-translate="login_here">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Container -->
+    <div id="chatbot-container" class="chatbot-container">
+        <div class="chat-button" id="chat-button">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="chat-box" id="chat-box">
+            <div class="chat-header">
+                <h3>SpeakBee Assistant</h3>
+                <button class="close-chat" id="close-chat">×</button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot">
+                    <p>Hello! I'm your SpeakBee assistant. How can I help you today?</p>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="user-message" placeholder="Type your message...">
+                <button id="send-message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app-container" class="app-container hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-heart-pulse"></i>
+                    <h1 data-translate="app_title">SpeechCare</h1>
+                </div>
+                <div class="header-controls">
+                    <div class="language-switch">
+                        <select id="appLanguageSelect">
+                            <option value="en-US">🇺🇸 English</option>
+                            <option value="ta-IN">🇮🇳 தமிழ்</option>
+                        </select>
+                    </div>
+                    <div class="user-info">
+                        <span id="welcomeUser" data-translate="welcome">Welcome!</span>
+                        <button id="logoutBtn" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span data-translate="logout">Logout</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Progress Dashboard -->
+            <section class="dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card streak-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="streakCount">0</h3>
+                            <p data-translate="day_streak">Day Streak</p>
+                        </div>
+                    </div>
+                    <div class="stat-card sessions-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalSessions">0</h3>
+                            <p data-translate="total_sessions">Total Sessions</p>
+                        </div>
+                    </div>
+                    <div class="stat-card accuracy-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="averageAccuracy">0%</h3>
+                            <p data-translate="avg_accuracy">Average Accuracy</p>
+                        </div>
+                    </div>
+                    <div class="stat-card level-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="userLevel">1</h3>
+                            <p data-translate="level">Level</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Practice Modes -->
+            <section class="practice-modes">
+                <h2 data-translate="practice_modes">Practice Modes</h2>
+                <div class="modes-grid">
+                    <div class="mode-card" id="wordPractice">
+                        <div class="mode-icon">
+                            <i class="fas fa-spell-check"></i>
+                        </div>
+                        <h3 data-translate="word_practice">Word Practice</h3>
+                        <p data-translate="word_practice_desc">Practice individual words and sounds</p>
+                        <div class="difficulty-badge easy" data-translate="easy">Easy</div>
+                    </div>
+                    <div class="mode-card" id="sentencePractice">
+                        <div class="mode-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3 data-translate="sentence_practice">Sentence Practice</h3>
+                        <p data-translate="sentence_practice_desc">Practice complete sentences</p>
+                        <div class="difficulty-badge medium" data-translate="medium">Medium</div>
+                    </div>
+                    <div class="mode-card" id="conversationPractice">
+                        <div class="mode-icon">
+                            <i class="fas fa-microphone-alt"></i>
+                        </div>
+                        <h3 data-translate="conversation_practice">Free Speech</h3>
+                        <p data-translate="conversation_practice_desc">Speak freely and get feedback</p>
+                        <div class="difficulty-badge hard" data-translate="advanced">Advanced</div>
+                    </div>
+                    <div class="mode-card" id="customPractice">
+                        <div class="mode-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h3 data-translate="custom_practice">Custom Practice</h3>
+                        <p data-translate="custom_practice_desc">Practice your own sentences</p>
+                        <div class="difficulty-badge medium" data-translate="custom">Custom</div>
+                    </div>
+                    <div class="mode-card" id="tongueTraining">
+                        <div class="mode-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3 data-translate="tongue_training">Tongue Training</h3>
+                        <p data-translate="tongue_training_desc">Learn tongue movements with visual guides</p>
+                        <div class="difficulty-badge easy" data-translate="guided">Guided</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Practice Area -->
+            <section id="practiceArea" class="practice-area hidden">
+                <div class="practice-header">
+                    <button id="backToMenu" class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        <span data-translate="back">Back</span>
+                    </button>
+                    <h2 id="practiceTitle" data-translate="practice">Practice</h2>
+                    <div class="practice-controls">
+                        <button id="settingsBtn" class="settings-btn">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="practice-content">
+                    <!-- Custom Sentence Input -->
+                    <div id="customSentenceInput" class="custom-sentence-input hidden">
+                        <div class="input-header">
+                            <h3 data-translate="enter_custom_sentence">Enter Your Own Sentence:</h3>
+                        </div>
+                        <div class="custom-input-group">
+                            <textarea id="customSentenceText" placeholder="Type your sentence here..." rows="3"></textarea>
+                            <button id="setCustomSentence" class="set-btn">
+                                <i class="fas fa-check"></i>
+                                <span data-translate="set_sentence">Set Sentence</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Target Display -->
+                    <div id="targetDisplay" class="target-display">
+                        <div class="target-header">
+                            <h3 data-translate="practice_this">Practice This:</h3>
+                            <button id="playTarget" class="play-btn">
+                                <i class="fas fa-volume-up"></i>
+                                <span data-translate="listen">Listen</span>
+                            </button>
+                        </div>
+                        <div id="targetText" class="target-text">Hello</div>
+                        <div id="targetTranslation" class="target-translation"></div>
+                    </div>
+
+                    <!-- Tongue Movement Guide -->
+                    <div id="tongueGuide" class="tongue-guide hidden">
+                        <div class="guide-header">
+                            <h3 data-translate="tongue_movement_guide">Tongue Movement Guide</h3>
+                        </div>
+                        <div class="tongue-visual">
+                            <div class="tongue-instructions">
+                                <h4 id="soundTitle">Sound: /a/</h4>
+                                <p id="tongueInstructions">Place your tongue flat and low in your mouth. Open your mouth wide.</p>
+                                <div class="movement-tips">
+                                    <div class="tip-item">
+                                        <i class="fas fa-arrow-right"></i>
+                                        <span id="tipText">Keep your tongue relaxed</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sound-selector">
+                            <h4 data-translate="select_sound">Select Sound to Practice:</h4>
+                            <div class="sound-buttons">
+                                <button class="sound-btn" data-sound="a">A</button>
+                                <button class="sound-btn" data-sound="e">E</button>
+                                <button class="sound-btn" data-sound="i">I</button>
+                                <button class="sound-btn" data-sound="o">O</button>
+                                <button class="sound-btn" data-sound="u">U</button>
+                                <button class="sound-btn" data-sound="th">TH</button>
+                                <button class="sound-btn" data-sound="r">R</button>
+                                <button class="sound-btn" data-sound="l">L</button>
+                                <button class="sound-btn" data-sound="s">S</button>
+                                <button class="sound-btn" data-sound="z">Z</button>
+                            </div>
+                        </div>
+
+                        <!-- Custom Sound Input -->
+                        <div class="custom-sound-input">
+                            <h4 data-translate="custom_sound_practice">Practice Custom Sound/Word:</h4>
+                            <div class="custom-sound-group">
+                                <input type="text" id="customSoundText" data-translate-placeholder="enter_custom_sound" placeholder="Enter custom sound or word..." />
+                                <button id="practiceCustomSound" class="practice-sound-btn">
+                                    <i class="fas fa-microphone"></i>
+                                    <span data-translate="practice_sound">Practice</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tongue Training Practice Area -->
+                        <div class="tongue-practice-area">
+                            <div class="tongue-recording-status">
+                                <div id="tongueRecordingIndicator" class="recording-indicator hidden">
+                                    <div class="pulse"></div>
+                                    <span data-translate="listening_tongue">Listening for tongue practice...</span>
+                                </div>
+                            </div>
+
+                            <!-- Tongue Practice Results -->
+                            <div id="tongueResults" class="tongue-results hidden">
+                                <div class="tongue-feedback">
+                                    <h4 data-translate="tongue_feedback">Tongue Position Feedback:</h4>
+                                    <div id="tongueFeedbackText" class="feedback-text"></div>
+                                </div>
+
+                                <div class="tongue-score">
+                                    <div class="score-display">
+                                        <div id="tongueScore" class="tongue-score-circle">
+                                            <span id="tongueScoreValue">0</span>
+                                            <small>%</small>
+                                        </div>
+                                        <div class="score-details">
+                                            <h5 data-translate="tongue_accuracy">Tongue Accuracy</h5>
+                                            <div id="tongueCategory" class="score-category"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tongue-improvement">
+                                    <h5 data-translate="improvement_tips">Improvement Tips:</h5>
+                                    <div id="tongueImprovementTips" class="improvement-tips-list"></div>
+                                </div>
+
+                                <div class="tongue-actions">
+                                    <button id="tryTongueAgain" class="action-btn secondary">
+                                        <i class="fas fa-redo"></i>
+                                        <span data-translate="try_again">Try Again</span>
+                                    </button>
+                                    <button id="nextTongueExercise" class="action-btn primary">
+                                        <i class="fas fa-arrow-right"></i>
+                                        <span data-translate="next_sound">Next Sound</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recording Interface -->
+                    <div class="recording-interface">
+                        <div class="recording-controls">
+                            <button id="startRecording" class="record-btn">
+                                <i class="fas fa-microphone"></i>
+                                <span data-translate="start_speaking">Start Speaking</span>
+                            </button>
+                            <button id="stopRecording" class="stop-btn hidden">
+                                <i class="fas fa-stop"></i>
+                                <span data-translate="stop">Stop</span>
+                            </button>
+                        </div>
+                        <div class="recording-status">
+                            <div id="recordingIndicator" class="recording-indicator hidden">
+                                <div class="pulse"></div>
+                                <span data-translate="listening">Listening...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Speech Output -->
+                    <div class="speech-output">
+                        <h3 data-translate="you_said">What you said:</h3>
+                        <div id="speechResult" class="speech-result">
+                            <span data-translate="click_start">Click "Start Speaking" to begin...</span>
+                        </div>
+                    </div>
+
+                    <!-- Results Panel -->
+                    <div id="resultsPanel" class="results-panel hidden">
+                        <div class="score-display">
+                            <div id="pronunciationScore" class="pronunciation-score">
+                                <div class="score-circle">
+                                    <span id="scoreValue">0</span>
+                                    <small>%</small>
+                                </div>
+                            </div>
+                            <div class="score-details">
+                                <h3 data-translate="pronunciation_score">Pronunciation Score</h3>
+                                <div id="scoreCategory" class="score-category"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="feedback-section">
+                            <h4 data-translate="feedback">Feedback:</h4>
+                            <div id="feedbackText" class="feedback-text"></div>
+                        </div>
+
+                        <!-- Detailed Speech Analysis -->
+                        <div class="detailed-analysis">
+                            <h4 data-translate="detailed_analysis">Detailed Analysis:</h4>
+
+                            <!-- Word-by-word breakdown -->
+                            <div class="word-analysis">
+                                <h5 data-translate="word_breakdown">Word Breakdown:</h5>
+                                <div id="wordBreakdown" class="word-breakdown-container"></div>
+                            </div>
+
+                            <!-- Timing Analysis -->
+                            <div class="timing-analysis">
+                                <h5 data-translate="timing_analysis">Speech Timing:</h5>
+                                <div class="timing-metrics">
+                                    <div class="metric-item">
+                                        <span class="metric-label" data-translate="speech_rate">Speech Rate:</span>
+                                        <span id="speechRate" class="metric-value">0 words/min</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label" data-translate="pause_analysis">Pauses:</span>
+                                        <span id="pauseAnalysis" class="metric-value">Normal</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label" data-translate="fluency_score">Fluency:</span>
+                                        <span id="fluencyScore" class="metric-value">85%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pronunciation Issues -->
+                            <div class="pronunciation-issues">
+                                <h5 data-translate="pronunciation_issues">Areas for Improvement:</h5>
+                                <div id="pronunciationIssues" class="issues-list"></div>
+                            </div>
+
+                            <!-- Visual Waveform -->
+                            <div class="waveform-analysis">
+                                <h5 data-translate="speech_pattern">Speech Pattern:</h5>
+                                <div id="speechWaveform" class="waveform-container">
+                                    <canvas id="waveformCanvas" width="400" height="100"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button id="tryAgain" class="action-btn secondary">
+                                <i class="fas fa-redo"></i>
+                                <span data-translate="try_again">Try Again</span>
+                            </button>
+                            <button id="nextExercise" class="action-btn primary">
+                                <i class="fas fa-arrow-right"></i>
+                                <span data-translate="next">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress History -->
+            <section class="progress-history">
+                <h2 data-translate="recent_progress">Recent Progress</h2>
+                <div class="history-container">
+                    <div id="sessionHistory" class="session-history">
+                        <p data-translate="no_sessions">No sessions yet. Start practicing to see your progress!</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 data-translate="settings">Settings</h3>
+                <button id="closeSettings" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label data-translate="speech_rate">Speech Rate:</label>
+                    <input type="range" id="speechRate" min="0.5" max="2" step="0.1" value="0.8">
+                    <span id="speechRateValue">0.8x</span>
+                </div>
+                <div class="setting-group">
+                    <label data-translate="difficulty">Difficulty Level:</label>
+                    <select id="difficultyLevel">
+                        <option value="easy" data-translate="easy">Easy</option>
+                        <option value="medium" data-translate="medium">Medium</option>
+                        <option value="hard" data-translate="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
